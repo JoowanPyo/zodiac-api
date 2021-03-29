@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="issue">
+
+	<select id="getissueList" parameterType="java.util.HashMap" resultType="com.gemiso.zodiac.dto.IssueDTO">
+		
+		SELECT
+			issu_id
+			, ch_div_cd
+			, issu_dtm
+			, issu_ord
+			, issu_kwd
+			, issu_ctt
+			, issu_fnsh_yn
+			, issu_del_yn
+			, inputr_id
+			, input_dtm
+			, updtr_id
+			, updt_dtm
+			, delr_id
+			, del_dtm
+			, issu_seq
+			, issu_fnsh_dtm
+			, issu_org_id
+			
+		FROM tb_issu is
+		WHERE is.issu_del_yn = 'N' 
+			
+		<if test="sdate != null and edate != ''">
+			AND is.issu_dtm BETWEEN TO_DATE(#{sdate},'YYYYMMDDHH') AND TO_DATE(#{edate},'YYYYMMDDHH') + 0.99999
+		</if>
+	
+		ORDER BY is.issu_dtm DESC, is.input_dtm DESC
+		
+	</select >
+	
+	<insert id="getissueIncert" parameterType="com.gemiso.zodiac.dto.IssueDTO">
+		
+		insert into 
+				tb_issu (
+					issu_id
+					,ch_div_cd
+					,issu_dtm
+					,issu_ord
+					,issu_kwd
+					,issu_ctt
+					,issu_fnsh_yn
+					,issu_del_yn
+					,inputr_id
+					,input_dtm
+					,updtr_id
+					,updt_dtm
+					,delr_id
+					,del_dtm
+					,issu_seq
+					,issu_fnsh_dtm
+					,issu_org_id
+				)
+		values(NEXTVAL('seq_issue_id'),#{ch_div_cd},#{issu_dtm},#{issu_ord},#{issu_kwd}
+				,#{issu_ctt},#{issu_fnsh_yn},#{issu_del_yn},#{inputr_id},#{input_dtm},#{updtr_id}
+					,#{updt_dtm},#{delr_id},#{del_dtm},#{issu_seq},#{issu_fnsh_dtm},#{issu_org_id})
+
+	
+	</insert>
+	
+	<update id="getIssueUpdate" parameterType="com.gemiso.zodiac.dto.IssueDTO">
+		update tb_issu 
+			set value = #{ch_div_cd} ,
+				value = #{issu_dtm} ,
+				value = #{issu_ord} ,
+				value = #{issu_kwd} ,
+				value = #{issu_ctt} ,
+				value = #{issu_fnsh_yn} ,
+				value = #{updtr_id} ,
+				value = #{updt_dtm} ,
+				value = #{issu_fnsh_dtm} ,
+				value = #{issu_org_id} 
+		where issu_id = #{issu_id} and issu_del_yn = 'N' 
+	</update>
+	
+	<update id="getIssueDelete" parameterType="com.gemiso.zodiac.dto.IssueDTO"> 
+		update tb_issu 
+			set value = #{issu_del_yn} ,
+				value = #{delr_id} ,
+				value = #{del_dtm} 
+		where issu_del_yn = 'N'  
+	</update>
+
+
+
+</mapper>

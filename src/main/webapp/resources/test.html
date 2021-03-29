@@ -1,0 +1,30 @@
+
+<head>
+   <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js'></script>
+
+   <script type="text/javascript">
+      function onClickButton() {
+         var topic = "/topic/" + document.getElementById("topic_id").value ;
+
+         var client = Stomp.client( "ws://10.153.151.73:61614", "v11.stomp" );
+         client.connect( "", "",
+            function() {
+               client.subscribe(topic,
+                  function( message ) {
+                     console.log(message.body);
+                     alert( message.body );
+                  }
+               );
+            }
+         );
+      }
+   </script>
+
+</head>
+<body>
+   <input type='text' name='topic' id='topic_id'></input>
+   <button onclick="onClickButton()">Click</button>
+
+
+</body>
+</html>

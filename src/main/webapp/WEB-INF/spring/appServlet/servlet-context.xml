@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:task="http://www.springframework.org/schema/task"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util"                   
+    xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd 
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util-3.0.xsd
+        http://www.springframework.org/schema/task
+		http://www.springframework.org/schema/task/spring-task-3.1.xsd">
+    
+
+    
+    <tx:advice id="txAdvice" transaction-manager="txManager">
+        <tx:attributes>
+            <tx:method name="*"/>
+        </tx:attributes>
+    </tx:advice>
+
+
+    <beans:bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <beans:property name="dataSource" ref="dataSource" />
+    </beans:bean>
+    
+    <tx:annotation-driven transaction-manager="txManager"/>
+    <!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+    
+    <!-- Enables the Spring MVC @Controller programming model -->
+    <annotation-driven />
+
+    <!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+    <resources mapping="/resources/**" location="/resources/" />
+
+    <!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+    <beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <beans:property name="prefix" value="/WEB-INF/views/" />
+        <beans:property name="suffix" value=".jsp" />
+    </beans:bean>
+
+	<!-- 
+    <beans:bean id="simpleMappingExceptionResolver" class="com.gemiso.nrcs.common.resolver.SimpleMappingExceptionResolver">
+        <beans:property name="exceptionMappings">
+            <beans:map>
+                <beans:entry key="Exception" value="generic_error"></beans:entry>
+            </beans:map>
+        </beans:property>
+        <beans:property name="defaultErrorView" value="generic_error" />
+    </beans:bean>
+	 -->
+	 
+    <!-- Configure to plugin JSON as request and response in method handler -->
+    <beans:bean
+        class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <beans:property name="messageConverters">
+            <beans:list>
+                <beans:ref bean="jsonMessageConverter" />
+            </beans:list>
+        </beans:property>
+    </beans:bean>
+
+    <!-- Configure bean to convert JSON to POJO and vice versa -->
+    <beans:bean id="jsonMessageConverter"
+        class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+    </beans:bean>
+    
+    <beans:bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
+        <beans:property name="order" value="1" />
+    </beans:bean>
+     
+    <beans:bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver"> 
+        <beans:property name="order" value="0"/> 
+        <beans:property name="defaultErrorView" value="error"/> 
+        <beans:property name="exceptionMappings"> 
+            <beans:props> 
+                <beans:prop key="RuntimeException">error</beans:prop> 
+            </beans:props> 
+        </beans:property>
+    </beans:bean>
+    
+    <!-- 
+    <context:property-placeholder location="classpath:application.properties" ignore-resource-not-found="false"/> 
+    -->
+    
+    <context:component-scan base-package="com.gemiso.zodiac.controller" />
+    <annotation-driven />
+
+    <!-- 스케쥴러파일이 존재하는 패키지 설정 -->
+    <!-- 
+    <context:component-scan base-package="" />
+    <task:scheduler id="jobScheduler" pool-size="10" /> 
+    <task:annotation-driven scheduler="jobScheduler" />
+	 -->
+
+	<!-- 
+	<interceptors>
+		<interceptor>
+			<mapping path="/**" />
+			<exclude-mapping path="/resources/**" />
+			<beans:bean class="com.gemiso.common.logger.Interceptor"></beans:bean>
+		</interceptor>
+	</interceptors> 
+	-->
+
+
+
+    <beans:bean id="swagger2Config" class="springfox.documentation.swagger2.configuration.Swagger2DocumentationConfiguration"></beans:bean>
+
+    <default-servlet-handler />
+    <resources location="classpath:/META-INF/resources/" mapping="swagger-ui.html"></resources>
+    <resources location="classpath:/META-INF/resources/webjars/" mapping="/webjars/**"></resources>
+    
+    <!-- <beans:bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/> -->
+    
+    <beans:bean class="org.springframework.mock.web.MockServletContext"> </beans:bean>
+
+    
+    <beans:bean id="issueService" class="com.gemiso.zodiac.service.impl.IssueServiceImpl"></beans:bean>
+    
+    <beans:bean id="issueDAO" class="com.gemiso.zodiac.dao.IssueDAO"></beans:bean>
+
+
+    <beans:bean id="jstlViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <beans:property name="order" value="3" />
+        <beans:property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+        <beans:property name="prefix" value="/WEB-INF/views/" />
+        <beans:property name="suffix" value=".jsp" />
+    </beans:bean>
+
+    <beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <beans:property name="maxUploadSize" value="100000000" />
+    </beans:bean>
+    
+    
+    <beans:bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <beans:property name="basename" value="i18n/messages" />
+        <beans:property name="useCodeAsDefaultMessage" value="true" />
+    </beans:bean>
+    
+    <beans:bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <beans:property name="dataSource" ref="dataSource" />
+    </beans:bean>
+
+	<beans:bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+		<beans:property name="requestFactory">
+			<beans:bean class="org.springframework.http.client.SimpleClientHttpRequestFactory">
+				<beans:property name="connectTimeout" value="5000" />
+				<beans:property name="readTimeout" value="30000" />
+			</beans:bean>
+		</beans:property>
+		<beans:property name="messageConverters">
+			<beans:list>
+				<beans:bean class="org.springframework.http.converter.FormHttpMessageConverter">
+					<beans:property name="partConverters">
+						<beans:list>
+							<beans:bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"></beans:bean>
+							<beans:bean class="org.springframework.http.converter.StringHttpMessageConverter">
+								<beans:constructor-arg>
+									<beans:bean class="java.nio.charset.Charset" factory-method="forName">
+										<beans:constructor-arg value="UTF-8" />
+									</beans:bean>
+								</beans:constructor-arg>
+								<beans:property name="writeAcceptCharset" value="false" />
+							</beans:bean>
+							<beans:bean class="org.springframework.http.converter.ResourceHttpMessageConverter"></beans:bean>
+						</beans:list>
+					</beans:property>
+				</beans:bean>
+				<beans:bean class="org.springframework.http.converter.StringHttpMessageConverter">
+					<beans:constructor-arg>
+						<beans:bean class="java.nio.charset.Charset" factory-method="forName">
+							<beans:constructor-arg value="UTF-8" />
+						</beans:bean>
+					</beans:constructor-arg>
+				</beans:bean>
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+    
+    
+    <beans:bean id="factory" class="org.springframework.http.client.SimpleClientHttpRequestFactory"></beans:bean>
+    
+    <!-- properties -->
+    <util:properties id="nrcs-prop" location="/WEB-INF/spring/prop/nrcs.properties"/>
+    
+ </beans:beans>

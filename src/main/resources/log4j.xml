@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+	<!-- Appenders -->
+
+	<appender class="org.apache.log4j.DailyRollingFileAppender" name="rolling_common">
+		<param name="file" value="/home/nrcs/npsnrcs/logs/common.log" />
+		<param name="Append" value="true" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd" />
+		<!-- <param name="MaxFileSize" value="10000kb" /> -->
+		<!-- <param name="MaxBackupIndex" value="5" /> -->
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%-5p] %d{yy-MM-dd HH:mm:ss} [%C{2}][%M][%L] - %m%n" />
+		</layout>
+	</appender>
+
+	<category name="com.common">
+		<priority value="INFO" />
+		<appender-ref ref="rolling_common" />
+	</category>
+
+	<!-- Application Loggers -->
+	<logger name="com.gemiso.zodiac">
+		<level value="info" />
+	</logger>
+
+	<!-- Query Loggers -->
+	<logger name="jdbc.sqlonly" additivity="false">
+		<level value="INFO" />
+		<appender-ref ref="console-infolog" />
+	</logger>
+
+	<logger name="jdbc.resultsettable" additivity="false">
+		<level value="INFO" />
+		<appender-ref ref="console" />
+	</logger>
+
+
+	<!-- Root Logger -->
+	<root>
+		<!-- <priority value="off" /> -->
+		<!-- <appender-ref ref="console" /> -->
+	</root>
+
+</log4j:configuration>
