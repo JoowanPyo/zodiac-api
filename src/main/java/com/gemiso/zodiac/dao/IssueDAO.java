@@ -38,6 +38,7 @@ public class IssueDAO extends AbstractDAO {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");		
 		//이슈 등록 날짜 등록
 		issueDto.setInput_dtm(simpleDateFormat.format(date).toString());
+		issueDto.setInputr_id(issueDto.getIssu_id());
 		
 				
 		insert("issue.getissueIncert", issueDto);
@@ -50,6 +51,7 @@ public class IssueDAO extends AbstractDAO {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");		
 		//이슈 업데이트 날짜 등록
 		issueDto.setUpdt_dtm(simpleDateFormat.format(date).toString());
+		issueDto.setUpdtr_id(issueDto.getIssu_id());
 		
 		return  (List<IssueDTO>) update("issue.getissuCreate", issueDto);
 	}

@@ -36,8 +36,8 @@ public class IssueServiceImpl implements IssueService {
 	}
 
 	@Override
-	public void getIssueDelete(IssueDTO issueDto) throws Exception {
-		issueDAO.getIssueDelete(issueDto);
+	public void getIssueDelete(String issu_id) throws Exception {
+		issueDAO.getIssueDelete(issu_id);
 		
 	}
 	
